@@ -1,0 +1,104 @@
+<html>
+
+<head>
+	<title>Currency Converter1</title>
+	<style>
+		#box
+{
+width:300px;
+height:140px;
+margin:0px auto;
+border:2px solid black;
+}
+h2
+{
+text-align: center;
+}
+table
+{
+margin:0px auto;
+}
+</style>
+	<script>
+		function convertCurrency()
+{
+var from = document.getElementById("from").value;
+var to = document.getElementById("to").value;
+var xmlhttp = new XMLHttpRequest();
+var url = "http://data.fixer.io/api/latest?access_key=a65f791f31f9c98b7c24922b6332a4b4&symbols=" + from + "," + to;
+xmlhttp.open ("GET",url,true);
+xmlhttp.send();
+xmlhttp.onreadystatechange=function()
+ {
+if (xmlhttp.readyState == 4 && xmlhttp.status == 200)
+  {
+var result = xmlhttp.responseText;
+var jsResult = JSON.parse(result);
+var oneUnit = jsResult.rates[to]/jsResult.rates[from];
+var amt = document.getElementById("fromAmount").value;
+document.getElementById("toAmount").value = (oneUnit*amt).toFixed(2);
+  }
+ }
+}
+function show_rate() {
+			var request = new XMLHttpRequest();
+			request.open('GET', 'https://api.exchangeratesapi.io/latest?base=HKD', true);
+			request.onload = function () {
+				var data = JSON.parse(this.response);
+				console.log(JSON.stringify(data));
+				var message = "Latest Rates:" + "<br/>";
+				message += "Date:" + data.date + " Base currency:HKD" + "<br/";
+				for (i in data.rates) {
+					message += "Currency:" + i + " Rate:" + data.rates[i] + "<br/>";
+				}
+				var my_msg = document.getElementById("my_label");
+				my_msg.innerHTML = message;
+			}
+			request.send();
+		}
+
+function load_resopnse(){
+	convertCurrency();
+	show_rate();
+}
+</script>
+</head>
+
+<body onload="load_resopnse()">
+	<div id="box">
+		<h2>Currency Converter</h2>
+		<table>
+			<tr>
+				<td><input id="fromAmount" type="text" value="1" onkeyup="convertCurrency();" /></td>
+				<td>
+				<img src="flag/usd.jpg" id="flag_r1" width="30" height="20" name="myImage">
+					<select id="from" onchange="convertCurrency();">
+						<option value="USD">USD</option>
+						<option value="HKD">HKD</option>
+						<option value="EUR">EUR</option>
+						<option value="JPY">JPY</option>
+						<option value="AUD">AUD</option>
+						<option value="DKK">DKK</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td><input id="toAmount" type="text" /></td>
+				<td>
+				<img src="flag/hkd.jpg" id="flag_r1" width="30" height="20" name="myImage">
+					<select id="to" onchange="convertCurrency();">
+						<option value="USD">USD</option>
+						<option value="HKD" selected>HKD</option>
+						<option value="EUR">EUR</option>
+						<option value="JPY">JPY</option>
+						<option value="AUD">AUD</option>
+						<option value="DKK">DKK</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+		<div>
+			<p id="my_label"></p>
+		</div>
+</body>
+</html>
